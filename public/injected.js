@@ -1,5 +1,5 @@
 // You CANNOT use `browser`/`chrome` here and you CANNOT interact with extension stuff like storage and tabs.
-
+// https://www.linkedin.com/feed/update/urn:li:activity:7287016011701043201/
 const XHR = XMLHttpRequest.prototype;
 
 const open = XHR.open;
@@ -18,12 +18,14 @@ XHR.setRequestHeader = function (header, value) {
 };
 
 function parseBlob(blob) {
-  console.log("blob in parseBlob", blob);
+  // console.log("blob in parseBlob", blob);
   const reader = new FileReader();
 
   // Read as text
   reader.onload = function (event) {
     console.log("Blob content (text):", event.target.result);
+
+    console.log(document.querySelector(""));
   };
 
   // Handle errors
@@ -38,8 +40,15 @@ XHR.send = function () {
   this.addEventListener("load", function () {
     const url = this.responseURL;
     const responseHeaders = this.getAllResponseHeaders();
-    console.log("this.responseURL", this.responseURL);
-    console.log("this.responseType", this.responseType);
+    // console.log("this.responseURL", this.responseURL);
+    // console.log("this.responseType", this.responseType);
+
+    if (
+      !this.responseURL?.includes?.(
+        "https://www.linkedin.com/voyager/api/graphql"
+      )
+    )
+      return;
     try {
       //   if (this.responseType != "blob") {
       let responseBody;
@@ -54,7 +63,6 @@ XHR.send = function () {
       }
       // Do your stuff HERE.
 
-      console.log("responseBody", responseBody);
       //   }
     } catch (err) {
       console.debug("Error reading or processing response.", err);
@@ -103,9 +111,8 @@ window.fetch = async function (...args) {
     } else {
       responseBody = await clonedResponse.text();
     }
-    console.log("args[0]", args[0]);
 
-    if (args[0]?.includes?.("api/graphql")) {
+    if (args?.[0]?.includes?.("api/graphql")) {
       console.log("Response Body:", responseBody);
     }
   } catch (err) {
